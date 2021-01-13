@@ -1,0 +1,53 @@
+---
+title: "PCA, ggplot"
+author: "Janelle Christensen"
+date: "1/13/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(janitor)
+library(here)
+library(palmerpenguins)
+
+#for PCA:
+library(ggfortify)
+
+# for ggplot customiation:
+library(readxl)
+library(gghighlight)
+library(lubridate)
+library(plotly)
+
+# to make compound figures
+library(patchwork)
+
+```
+
+## Part 1: PCA with Penguins
+
+```{r}
+
+penguin_pca <- penguins %>% 
+  select(body_mass_g, ends_with("_mm")) %>% 
+  #helper function to filter data by a character vector
+  drop_na() %>% 
+  scale() %>% 
+  prcomp()
+
+penguin_pca$rotation
+
+penguin_complete <- penguins %>% 
+  drop_na(body_mass_g, ends_with("_mm"))
+
+autoplot(penguin_pca,
+         data = penguin_complete,
+         colour = "species", #requires the u in colour
+         loadings = TRUE,
+         loadings.label = TRUE) +
+  theme_minimal()
+# autoplot recognizes type of data and assumes type of graph to make
+```
+
